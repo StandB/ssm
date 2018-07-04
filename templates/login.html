@@ -7,8 +7,8 @@
       <title>home // login</title>
     </head>
     <body>
-      <img src="{{ url_for('static', filename='img/logo.png') }}" width="500px" id="logo">
-      <form id="login" method="POST" action="">
+      <img src="{{ url_for('static', filename='img/logo.png') }}" id="logo">
+      <form id="login" method="POST" action="/api/login">
         <h3>Login</h3>
         <input type="text" name="username" placeholder="Username">
         <input type="password" name="password" placeholder="Password"><br>
