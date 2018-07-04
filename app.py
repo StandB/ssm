@@ -1,5 +1,5 @@
 import json
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
@@ -23,6 +23,7 @@ class User(db.Model):
         return {'id': self.id, 'name': self.name}
 
 
+# API endpoints
 @app.route('/user', methods=['GET'])
 def show_all():
     """ get all users """
@@ -37,6 +38,27 @@ def add_user():
     db.session.add(user)
     db.session.commit()
     return jsonify(user.serialize)
+
+
+# regular endpoins
+@app.route('/login', methods=['GET'])
+def get_login():
+    """ get login page """
+    return render_template('login.html')
+
+
+@app.route('/login', methods=['POST'])
+def submit_login():
+    """ submit login page """
+    username = request.form['username']
+    password = request.form['password']
+    return redirect(url_for('get_index'))
+
+
+@app.route('/', methods=['GET'])
+def get_index():
+    """ main page """
+    return render_template('index.html')
 
 if __name__ == '__main__':
     db.create_all()

@@ -1,0 +1,28 @@
+html {
+  margin: 0;
+  padding: 0;
+  color: grey;
+  background-color: black;
+}
+
+#logo {
+  display: block;
+  margin: 0 auto;
+  margin-top: 50px;
+  border-radius: 8px;
+}
+
+#login {
+  width: 300px;
+  margin: 0 auto;
+  margin-top: 50px;
+  text-align: center;
+}
+
+#login input {
+  margin-top: 5px;
+}
+
+#login input:last-child {
+  margin-top: 15px;
+}
