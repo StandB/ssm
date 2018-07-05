@@ -1,7 +1,10 @@
 import json
-from flask import Flask, request, jsonify, render_template, redirect, url_for
-from flask_sqlalchemy import SQLAlchemy
 import bcrypt
+from flask import Flask, request, jsonify, \
+    render_template, redirect, url_for, g
+from flask_sqlalchemy import SQLAlchemy
+from flask_login import login_user, logout_user, current_user, \
+    login_required, LoginManager
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite3'
@@ -9,6 +12,15 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'ye'
 
 db = SQLAlchemy(app)
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'get_login'
+
+
+@login_manager.user_loader
+def load_user(id):
+    return User.query.get(int(id))
 
 
 class User(db.Model):
@@ -18,7 +30,22 @@ class User(db.Model):
 
     def __init__(self, username, password):
         self.username = username
-        self.password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf8')
+        self.password = bcrypt.hashpw(
+            password.encode('utf-8'),
+            bcrypt.gensalt()
+        ).decode('utf8')
+
+    def is_authenticated(self):
+        return True
+
+    def is_active(self):
+        return True
+
+    def is_anonymous(self):
+        return False
+
+    def get_id(self):
+        return str(self.id).encode("utf-8").decode("utf-8")
 
     @property
     def serialize(self):
@@ -53,16 +80,22 @@ def submit_login():
 
     # todo: should result in error
     if user is None:
-        return render_template('login.html')
+        return redirect(url_for('get_login'))
 
     if bcrypt.checkpw(password, user.password.encode("utf-8")):
-        return redirect(url_for('get_index'))
+        login_user(user)
+        return redirect(request.args.get('next') or url_for('get_index'))
     else:
         # todo: should result in error
-        return render_template('login.html')
+        return redirect(url_for('get_login'))
 
 
-# regular endpoins
+@app.before_request
+def before_request():
+    g.user = current_user
+
+
+# regular endpoints
 @app.route('/login', methods=['GET'])
 def get_login():
     """ get login page """
@@ -70,6 +103,7 @@ def get_login():
 
 
 @app.route('/', methods=['GET'])
+@login_required
 def get_index():
     """ main page """
     return render_template('index.html')
