@@ -1,0 +1,6 @@
+{% extends "layout.html" %}
+{% block body %}
+  {% for post in posts %}
+  <p>{{ post.title }} - {{ post.content }}</p>
+  {% endfor %}
+{% endblock %}

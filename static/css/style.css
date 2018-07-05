@@ -1,8 +1,26 @@
+@font-face {
+  font-family: 'Monaco';
+  src: url(../fonts/Monaco.ttf)
+}
+
 html {
   margin: 0;
   padding: 0;
   color: grey;
   background-color: black;
+  font-family: Monaco;
+}
+
+nav {
+  margin-top: 0;
+  text-align: center;
+  width: 300px;
+  float: right;
+}
+
+nav a {
+  text-decoration: underline;
+  color: grey;
 }
 
 #logo {
@@ -26,4 +44,14 @@ html {
 
 #login input:last-child {
   margin-top: 15px;
+}
+
+#newpost textarea {
+  width: 400px;
+  height: 200px;
+}
+
+#newpost input, #newpost textarea {
+  display: block;
+  margin-top: 20px;
 }

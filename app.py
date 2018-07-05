@@ -27,6 +27,7 @@ class User(db.Model):
     id = db.Column('id', db.Integer, primary_key=True)
     username = db.Column(db.String(100), nullable=False)
     password = db.Column(db.String(100), nullable=False)
+    posts = db.relationship('Post', backref='user', lazy='dynamic')
 
     def __init__(self, username, password):
         self.username = username
@@ -53,14 +54,24 @@ class User(db.Model):
         return {'id': self.id, 'username': self.username}
 
 
-# API endpoints
-@app.route('/api/user', methods=['GET'])
-def show_all():
-    """ get all users """
-    return json.dumps([x.serialize for x in User.query.all()])
+class Post(db.Model):
+    id = db.Column('id', db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    title = db.Column(db.String(50), nullable=False)
+    content = db.Column(db.String(500), nullable=False)
+
+    def __init__(self, title, content):
+        self.title = title
+        self.content = content
+
+    @property
+    def serialize(self):
+        """ convert the object to JSON """
+        return {'id': self.id, 'user_id': self.user_id,
+                'title': self.title, 'content': self.content}
 
 
-@app.route('/api/user', methods=['POST'])
+@app.route('/api/users', methods=['POST'])
 def add_user():
     """ add a user """
     user_json = request.json
@@ -68,6 +79,19 @@ def add_user():
     db.session.add(user)
     db.session.commit()
     return jsonify(user.serialize)
+
+
+@login_required
+@app.route('/api/posts', methods=['POST'])
+def create_post():
+    """ create post """
+    title = request.form['title']
+    content = request.form['content']
+    post = Post(title, content)
+    post.user = g.user
+    db.session.add(post)
+    db.session.commit()
+    return redirect(url_for('get_index'))
 
 
 @app.route('/api/login', methods=['POST'])
@@ -102,11 +126,31 @@ def get_login():
     return render_template('login.html')
 
 
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('get_index'))
+
+
 @app.route('/', methods=['GET'])
 @login_required
 def get_index():
     """ main page """
     return render_template('index.html')
+
+
+@app.route('/users', methods=['GET'])
+@login_required
+def get_users():
+    users = [x.serialize for x in User.query.all()]
+    return render_template('users.html', users=users)
+
+
+@app.route('/posts', methods=['GET'])
+@login_required
+def get_own_posts():
+    posts = [x.serialize for x in Post.query.filter_by(user_id=g.user.id).all()]
+    return render_template('posts.html', posts=posts)
 
 if __name__ == '__main__':
     db.create_all()

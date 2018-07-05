@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>home // index</title>
+  </head>
+  <nav>
+    <a href="/users">Users</a> |
+    <a href="/posts">Posts</a> |
+    <a href="/user/{{g.user.id}}">{{g.user.username}}</a> --
+    <a href="/logout">LO</a>
+  </nav>
+  <body> {% block body %} {% endblock %}</body>
+</html>
