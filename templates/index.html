@@ -1,10 +1,7 @@
 {% extends "layout.html" %}
 {% block body %}
-  <p>Succesfully logged in :3</p>
-  <p> Create a post!? </p>
-  <form id="newpost" method="POST" action="/api/posts">
-    <input type="text" name="title" size="40" placeholder="Title">
-    <textarea name="content" size="300" placeholder="Content"></textarea>
-    <input type="Submit" name="submit" value="Create!">
-  </form>
+  <div id="welcome">
+    <p>Succesfully logged in :3</p>
+    <p>Welcome to your dashboard, <b>{{ g.user.username }}</b></p>
+  </div>
 {% endblock %}

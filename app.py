@@ -91,7 +91,7 @@ def create_post():
     post.user = g.user
     db.session.add(post)
     db.session.commit()
-    return redirect(url_for('get_index'))
+    return redirect(url_for('get_own_posts'))
 
 
 @app.route('/api/login', methods=['POST'])
@@ -151,6 +151,18 @@ def get_users():
 def get_own_posts():
     posts = [x.serialize for x in Post.query.filter_by(user_id=g.user.id).all()]
     return render_template('posts.html', posts=posts)
+
+
+@app.route('/post', methods=['GET'])
+@login_required
+def create_post_page():
+    return render_template('post.html')
+
+
+@app.route('/profile', methods=['GET'])
+@login_required
+def get_profile():
+    return render_template('profile.html')
 
 if __name__ == '__main__':
     db.create_all()

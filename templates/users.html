@@ -1,6 +1,10 @@
 {% extends "layout.html" %}
 {% block body %}
-  {% for user in users %}
-  <p>{{ user.id }} - {{ user.username }}</p>
-  {% endfor %}
+  <div id="users">
+    {% for user in users %}
+    <div class="user">
+      <p>{{ user.id }} - {{ user.username }}</p>
+    </div>
+    {% endfor %}
+  </div>
 {% endblock %}

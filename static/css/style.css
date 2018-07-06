@@ -4,6 +4,7 @@
 }
 
 html {
+  font-size: 17px;
   margin: 0;
   padding: 0;
   color: grey;
@@ -12,7 +13,9 @@ html {
 }
 
 nav {
-  margin-top: 0;
+  top: 15px;
+  right: 15px;
+  position: fixed;
   text-align: center;
   width: 300px;
   float: right;
@@ -46,6 +49,19 @@ nav a {
   margin-top: 15px;
 }
 
+#welcome {
+  margin: 0 auto;
+  margin-top: 100px;
+  width: 500px;
+  text-align: center;
+}
+
+#post_content {
+  width: 500px;
+  margin: 0 auto;
+  margin-top: 50px;
+}
+
 #newpost textarea {
   width: 400px;
   height: 200px;
@@ -54,4 +70,31 @@ nav a {
 #newpost input, #newpost textarea {
   display: block;
   margin-top: 20px;
+}
+
+#posts {
+  width: 500px;
+  margin: 0 auto;
+  margin-top: 50px;
+}
+
+.post {
+  margin-top: 50px;
+}
+
+#users {
+  text-align: center;
+  width: 500px;
+  margin: 0 auto;
+  margin-top: 50px;
+}
+
+.user {
+  margin-top: 30px;
+}
+
+#profile {
+  width: 200px;
+  margin: 0 auto;
+  margin-top: 50px;
 }

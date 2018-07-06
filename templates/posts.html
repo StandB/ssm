@@ -1,6 +1,12 @@
 {% extends "layout.html" %}
 {% block body %}
-  {% for post in posts %}
-  <p>{{ post.title }} - {{ post.content }}</p>
-  {% endfor %}
+  <div id="posts">
+    {% for post in posts %}
+    <div class="post">
+      <p><b>{{ post.title }}</b></p>
+      <p>{{ post.content }}</p>
+    </div>
+    {% endfor %}
+    <a href="/post" style="float: right; margin-top: 50px;">Create post</a>
+  </div>
 {% endblock %}
