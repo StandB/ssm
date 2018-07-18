@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+{% block body %}
+  <div id="post_content">
+    <p> Add a user OwO </p>
+    <form id="newpost" method="POST" action="/api/users" enctype="multipart/form-data">
+      <input type="text" name="username" size="40" placeholder="Title">
+      <input type="password" name="password" size="40" placeholder="Password">
+      <input type="file" name="file">
+      <input type="Submit" name="submit" value="Create!">
+    </form>
+  </div>
+{% endblock %}

@@ -17,7 +17,7 @@ nav {
   right: 15px;
   position: fixed;
   text-align: center;
-  width: 300px;
+  width: 350px;
   float: right;
 }
 
@@ -94,7 +94,14 @@ nav a {
 }
 
 #profile {
-  width: 200px;
   margin: 0 auto;
   margin-top: 50px;
+  text-align: center;
+}
+
+#avatar {
+  max-width: 200px;
+  border-radius: 25px;
+  display: block;
+  margin: 0 auto;
 }

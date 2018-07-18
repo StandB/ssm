@@ -1,6 +1,7 @@
 {% extends "layout.html" %}
 {% block body %}
   <div id="profile">
+    <img id="avatar" src="http://localhost:5000/uploads/{{ g.user.avatar }}">
     <p>Username: <b>{{ g.user.username }}</b></p>
     <p>ID: <b>{{ g.user.id }}</b> </p>
   </div>
