@@ -1,6 +1,6 @@
 import json, bcrypt, uuid, os
 from flask import Flask, request, jsonify, \
-    render_template, redirect, url_for, g, send_from_directory
+    render_template, redirect, url_for, g, send_from_directory, abort
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import login_user, logout_user, current_user, \
     login_required, LoginManager
@@ -18,6 +18,9 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'get_login'
 
+@app.errorhandler(404)
+def page_not_found(error):
+    return render_template('404.html'), 404
 
 @login_manager.user_loader
 def load_user(id):
@@ -76,15 +79,15 @@ class Post(db.Model):
 
 
 @app.route('/api/users', methods=['POST'])
+@login_required
 def add_user():
     """ add a user """
     username = request.form.get('username')
     password = request.form.get('password')
-    if password is None or username is None:
-        return jsonify({'error': 'Username and password please!'})
+    if password is "" or username is "":
+        return redirect(url_for('add_user_page'))
 
     avatar = 'default.jpg'
-    print(request.files)
     f = request.files.get('file')
     if f is not None:
         avatar = uuid.uuid4().hex + ".jpg"  
@@ -96,14 +99,51 @@ def add_user():
     return redirect(url_for('get_users'))
 
 
+# native forms doesn't support PUT so used different endpoint :/
+@app.route('/api/users/update', methods=['POST'])
+@login_required
+def update_user():
+    """ update a user """
+    id = request.form.get('id')
+    username = request.form.get('username')
+    password = request.form.get('password')
+
+    # get existing user
+    user = db.session.query(User).filter_by(id=id).first()
+    # auth check
+    if user is None or g.user.password is not user.password:
+        return redirect(url_for('get_login'))
+
+    # update avatar of user
+    f = request.files.get('file')
+    if f is not None:
+        user.avatar = uuid.uuid4().hex + ".jpg"  
+        f.save(os.path.join(app.config['UPLOAD_FOLDER'], user.avatar))
+
+    # username always has value so update right away
+    user.username = username
+    # if the password isn't set it means we don't want to update it. So update if set
+    if password is not "" and password is not None:
+        # encrypt
+        user.password = bcrypt.hashpw(
+            password.encode('utf-8'),
+            bcrypt.gensalt()
+        ).decode('utf8')
+
+    db.session.commit()
+    return redirect(url_for('get_profile', id=user.id))
+
+
 @login_required
 @app.route('/api/posts', methods=['POST'])
 def create_post():
     """ create post """
     title = request.form.get('title')
     content = request.form.get('content')
+    
     if title is '' or content is '':
         return redirect(url_for('create_post_page'))
+    
     post = Post(title, content)
     post.user = g.user
     db.session.add(post)
@@ -119,7 +159,6 @@ def submit_login():
 
     user = db.session.query(User).filter_by(username=username).first()
 
-    # todo: should result in error
     if user is None:
         return redirect(url_for('get_login'))
 
@@ -127,7 +166,6 @@ def submit_login():
         login_user(user)
         return redirect(request.args.get('next') or url_for('get_index'))
     else:
-        # todo: should result in error
         return redirect(url_for('get_login'))
 
 
@@ -176,10 +214,18 @@ def create_post_page():
     return render_template('post.html')
 
 
-@app.route('/profile', methods=['GET'])
+@app.route('/users/<id>', methods=['GET'])
 @login_required
-def get_profile():
-    return render_template('profile.html')
+def get_profile(id):
+    user = User.query.filter_by(id=id).first()
+    if user is None:
+        abort(404)
+    return render_template('profile.html', user=user.serialize)
+
+@app.route('/editprofile', methods=['GET'])
+@login_required
+def edit_profile():
+    return render_template('editprofile.html')
 
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):

@@ -1,8 +1,11 @@
 {% extends "layout.html" %}
 {% block body %}
   <div id="profile">
-    <img id="avatar" src="http://localhost:5000/uploads/{{ g.user.avatar }}">
-    <p>Username: <b>{{ g.user.username }}</b></p>
-    <p>ID: <b>{{ g.user.id }}</b> </p>
+    <img id="avatar" src="http://localhost:5000/uploads/{{ user.avatar }}">
+    <p>Username: <b>{{ user.username }}</b></p>
+    <p>ID: <b>{{ user.id }}</b> </p>
+    {% if user.id == g.user.id %}
+    <a href="/editprofile">Edit</a>
+    {% endif %}
   </div>
 {% endblock %}

@@ -12,6 +12,10 @@ html {
   font-family: Monaco;
 }
 
+body {
+  font-family: Monaco;
+}
+
 nav {
   top: 15px;
   right: 15px;
@@ -95,13 +99,28 @@ nav a {
 
 #profile {
   margin: 0 auto;
-  margin-top: 50px;
+  margin-top: 100px;
   text-align: center;
 }
 
 #avatar {
-  max-width: 200px;
+  max-width: 300px;
   border-radius: 25px;
   display: block;
   margin: 0 auto;
+}
+
+#editprofile {
+  margin: 0 auto;
+  margin-top: 100px;
+}
+
+#edits {
+  width: 330px;
+  margin: 0 auto;
+  margin-top: 30px;
+}
+
+#edits input {
+  margin-top: 15px;
 }

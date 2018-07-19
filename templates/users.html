@@ -3,7 +3,7 @@
   <div id="users">
     {% for user in users %}
     <div class="user">
-      <p>{{ user.id }} - {{ user.username }}</p>
+      <p><a href="/users/{{user.id}}">{{ user.id }} - {{ user.username }}</a></p>
     </div>
     {% endfor %}
   </div>
