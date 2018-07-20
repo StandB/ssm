@@ -6,10 +6,13 @@ from flask_login import login_user, logout_user, current_user, \
     login_required, LoginManager
 from werkzeug import secure_filename
 
+upload_folder = 'avatars'
+upload_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), upload_folder)
+
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite3'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['UPLOAD_FOLDER'] = r'C:\Users\Stan\dev\home\avatars'
+app.config['UPLOAD_FOLDER'] = upload_path
 app.config['SECRET_KEY'] = 'ye'
 
 db = SQLAlchemy(app)
@@ -18,9 +21,11 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'get_login'
 
+
 @app.errorhandler(404)
 def page_not_found(error):
     return render_template('404.html'), 404
+
 
 @login_manager.user_loader
 def load_user(id):
