@@ -1,18 +1,21 @@
 {% extends "layout.html" %}
 {% block body %}
   <div id="editprofile">
-    <img id="avatar" src="http://localhost:5000/uploads/{{ g.user.avatar }}">
-    <div id="edits">
-        <form method="POST" action="/api/users/update" enctype="multipart/form-data">
-            <input type="hidden" name="id" value="{{g.user.id}}"
-            <label for="file">Avatar:</label>
-            <input type="file" name="file"><br>
-            <label for="username">Username:</label>
-            <input type="text" name="username" value="{{g.user.username}}"><br>
-            <label for="password">Password:</label>
-            <input type="password" name="password"><br>
-            <input type="submit" value="Submit">
-        </form>
+    <div id="avatar">
+      <img id="avatarimg" src="http://localhost:5000/uploads/{{ g.user.avatar }}">
+    </div>
+      <form method="POST" action="/api/users/update" enctype="multipart/form-data" id="editform">
+        <input type="hidden" name="id" value="{{g.user.id}}">
+        <label for="file">Avatar:</label>
+        <input type="file" name="file"><br>
+        <label for="username">Username:</label>
+        <input type="text" name="username" value="{{g.user.username}}"><br>
+        <label for="password">Password:</label>
+        <input type="password" name="password"><br>
+        <label for="description">Description:</label><br>
+        <textarea name="description">{{g.user.description}}</textarea><br>
+        <input type="submit" value="Submit" id="button">
+      </form>
     </div>
   </div>
 {% endblock %}

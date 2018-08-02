@@ -1,11 +1,25 @@
 {% extends "layout.html" %}
 {% block body %}
   <div id="profile">
-    <img id="avatar" src="http://localhost:5000/uploads/{{ user.avatar }}">
+    <div id="avatar">
+      <img id="avatarimg" src="http://localhost:5000/uploads/{{ user.avatar }}">
+    </div>
     <p>Username: <b>{{ user.username }}</b></p>
-    <p>ID: <b>{{ user.id }}</b> </p>
+    <p>ID: <b>{{ user.id }}</b></p>
+    <p>Description: <b>{{ user.description }}</b></p>
+    
     {% if user.id == g.user.id %}
     <a href="/editprofile">Edit</a>
+    {% endif %}
+  
+    {% if post != None %}
+    <h3 style="margin-top: 30px;">Most recent post:</h3>
+    <div id="posts">
+      <div class="post">
+        <p><b>{{ post.title }}</b></p>
+        <p>{{ post.content }}</p>
+      </div>
+    </div>
     {% endif %}
   </div>
 {% endblock %}

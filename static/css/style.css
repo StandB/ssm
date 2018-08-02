@@ -79,11 +79,11 @@ nav a {
 #posts {
   width: 500px;
   margin: 0 auto;
-  margin-top: 50px;
+  margin-top: 25px;
 }
 
 .post {
-  margin-top: 50px;
+  margin-top: 25px;
 }
 
 #users {
@@ -99,15 +99,22 @@ nav a {
 
 #profile {
   margin: 0 auto;
-  margin-top: 100px;
+  margin-top: 50px;
   text-align: center;
 }
 
 #avatar {
-  max-width: 300px;
-  border-radius: 25px;
+  width: 300px;
+  height: 300px;
   display: block;
   margin: 0 auto;
+}
+
+#avatarimg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 25px;
 }
 
 #editprofile {
@@ -115,12 +122,18 @@ nav a {
   margin-top: 100px;
 }
 
-#edits {
+#editform {
   width: 330px;
   margin: 0 auto;
-  margin-top: 30px;
+  margin-top: 15px;
+  text-align: center;
 }
 
-#edits input {
+#editform label {
+  display: inline-block;
+  margin-top: 15px;
+}
+
+#editform #button {
   margin-top: 15px;
 }

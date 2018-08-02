@@ -37,6 +37,7 @@ class User(db.Model):
     username = db.Column(db.String(100), nullable=False)
     password = db.Column(db.String(100), nullable=False)
     avatar = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.String(300), nullable=False)
     posts = db.relationship('Post', backref='user', lazy='dynamic')
 
     def __init__(self, username, password, avatar):
@@ -45,6 +46,7 @@ class User(db.Model):
             password.encode('utf-8'),
             bcrypt.gensalt()
         ).decode('utf8')
+        self.description = 'Nothing here yet :/'
         self.avatar = avatar
 
     def is_authenticated(self):
@@ -62,7 +64,7 @@ class User(db.Model):
     @property
     def serialize(self):
         """ convert the object to JSON """
-        return {'id': self.id, 'username': self.username, 'avatar': self.avatar}
+        return {'id': self.id, 'username': self.username, 'avatar': self.avatar, 'description': self.description}
 
 
 
@@ -112,12 +114,16 @@ def update_user():
     id = request.form.get('id')
     username = request.form.get('username')
     password = request.form.get('password')
+    description = request.form.get('description')
 
     # get existing user
     user = db.session.query(User).filter_by(id=id).first()
     # auth check
     if user is None or g.user.password is not user.password:
         return redirect(url_for('get_login'))
+
+    #update description
+    user.description = description
 
     # update avatar of user
     f = request.files.get('file')
@@ -223,9 +229,10 @@ def create_post_page():
 @login_required
 def get_profile(id):
     user = User.query.filter_by(id=id).first()
+    post = Post.query.filter_by(user_id=id).first()
     if user is None:
         abort(404)
-    return render_template('profile.html', user=user.serialize)
+    return render_template('profile.html', user=user.serialize, post=post)
 
 @app.route('/editprofile', methods=['GET'])
 @login_required
