@@ -1,12 +1,14 @@
 {% extends "layout.html" %}
 {% block body %}
   <div id="posts">
+    <h3>Posts of {{ g.user.username }} </h3>
     {% for post in posts %}
+    <hr>
     <div class="post">
       <p><b>{{ post.title }}</b></p>
       <p>{{ post.content }}</p>
     </div>
     {% endfor %}
-    <a href="/post" style="float: right; margin-top: 25px;">Create post</a>
+    <a href="/createpost" style="float: right; margin-top: 25px;">Create post</a>
   </div>
 {% endblock %}

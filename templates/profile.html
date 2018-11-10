@@ -14,11 +14,8 @@
   
     {% if post != None %}
     <h3 style="margin-top: 30px;">Most recent post:</h3>
-    <div id="posts">
-      <div class="post">
-        <p><b>{{ post.title }}</b></p>
-        <p>{{ post.content }}</p>
-      </div>
+    <div class="post">
+      <p><b>{{ post.title }} -- {{ post.date }}</b></p>
     </div>
     {% endif %}
   </div>

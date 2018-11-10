@@ -1,4 +1,4 @@
-import json, bcrypt, uuid, os
+import json, bcrypt, uuid, os, time
 from flask import Flask, request, jsonify, \
     render_template, redirect, url_for, g, send_from_directory, abort
 from flask_sqlalchemy import SQLAlchemy
@@ -73,10 +73,12 @@ class Post(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     title = db.Column(db.String(50), nullable=False)
     content = db.Column(db.String(500), nullable=False)
+    date = db.Column(db.String(500), nullable=False)
 
     def __init__(self, title, content):
         self.title = title
         self.content = content
+        self.date = time.strftime("%d/%m/%Y")
 
     @property
     def serialize(self):
@@ -219,10 +221,10 @@ def get_own_posts():
     return render_template('posts.html', posts=posts)
 
 
-@app.route('/post', methods=['GET'])
+@app.route('/createpost', methods=['GET'])
 @login_required
 def create_post_page():
-    return render_template('post.html')
+    return render_template('createpost.html')
 
 
 @app.route('/users/<id>', methods=['GET'])

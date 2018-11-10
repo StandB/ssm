@@ -6,14 +6,13 @@
     </div>
       <form method="POST" action="/api/users/update" enctype="multipart/form-data" id="editform">
         <input type="hidden" name="id" value="{{g.user.id}}">
-        <label for="file">Avatar:</label>
-        <input type="file" name="file"><br>
-        <label for="username">Username:</label>
+        <input type="file" name="file" style="margin-left: 70px;"><br>
+        <label for="username" style="margin-top: 25px;">Username:</label>
         <input type="text" name="username" value="{{g.user.username}}"><br>
         <label for="password">Password:</label>
         <input type="password" name="password"><br>
-        <label for="description">Description:</label><br>
-        <textarea name="description">{{g.user.description}}</textarea><br>
+        <label for="description" style="margin-top: 25px;">Description:</label><br>
+        <textarea name="description" rows="5" cols="30" style="margin-top: 10px;">{{g.user.description}}</textarea><br>
         <input type="submit" value="Submit" id="button">
       </form>
     </div>
