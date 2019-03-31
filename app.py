@@ -31,6 +31,10 @@ def page_not_found(error):
 def load_user(id):
     return User.query.get(int(id))
 
+follows = db.Table('follows',
+    db.Column('user_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
+    db.Column('follows_id', db.Integer, db.ForeignKey('user.id'), primary_key=True)
+)
 
 class User(db.Model):
     id = db.Column('id', db.Integer, primary_key=True)
@@ -38,6 +42,7 @@ class User(db.Model):
     password = db.Column(db.String(100), nullable=False)
     avatar = db.Column(db.String(100), nullable=False)
     description = db.Column(db.String(300), nullable=False)
+    follows = db.relationship('User', secondary=follows, primaryjoin=id==follows.c.user_id,secondaryjoin=id==follows.c.follows_id)
     posts = db.relationship('Post', backref='user', lazy='dynamic')
 
     def __init__(self, username, password, avatar):
@@ -64,8 +69,7 @@ class User(db.Model):
     @property
     def serialize(self):
         """ convert the object to JSON """
-        return {'id': self.id, 'username': self.username, 'avatar': self.avatar, 'description': self.description}
-
+        return {'id': self.id, 'username': self.username, 'avatar': self.avatar, 'description': self.description, 'follows': self.follows}
 
 
 class Post(db.Model):
@@ -232,9 +236,34 @@ def create_post_page():
 def get_profile(id):
     user = User.query.filter_by(id=id).first()
     post = Post.query.filter_by(user_id=id).first()
+    following = False
+    for following_user in g.user.follows:
+        if following_user.id == int(id):
+            following = True
+
     if user is None:
         abort(404)
-    return render_template('profile.html', user=user.serialize, post=post)
+    return render_template('profile.html', user=user.serialize, post=post, following=following)
+
+@app.route('/users/<id>', methods=['POST'])
+@login_required
+def follow_user(id):
+    user = User.query.filter_by(id=id).first()
+    post = Post.query.filter_by(user_id=id).first()
+    following = False
+
+    if user is None:
+        abort(404)
+
+    me = User.query.filter_by(id=g.user.id).first()
+
+    if user not in me.follows:
+        me.follows.append(user)
+        following=True
+
+    db.session.commit()
+
+    return render_template('profile.html', user=user.serialize, post=post, following=following)
 
 @app.route('/editprofile', methods=['GET'])
 @login_required
@@ -257,7 +286,10 @@ def create_root_user():
     if user is not None:
         return
     me = User('root', 'root', 'default.jpg')
+    notme = User('root1', 'root1', 'default.jpg')
+    me.follows.append(notme)
     db.session.add(me)
+    db.session.add(notme)
     db.session.commit()
 
 

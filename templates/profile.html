@@ -10,8 +10,20 @@
     
     {% if user.id == g.user.id %}
     <a href="/editprofile">Edit</a>
+    {% else %}
+      {% if following == True %}
+          <p style="color: green;"> Already following! </p>
+      {% else %}
+          <p style="color: orange;"> Not following yet! </p>
+          <form action="" method="post">
+            <input type="submit" value="+" />
+          </form>
+      {% endif %}
+
     {% endif %}
-  
+
+    <hr style="margin-top: 30px;">
+    
     {% if post != None %}
     <h3 style="margin-top: 30px;">Most recent post:</h3>
     <div class="post">
