@@ -224,6 +224,12 @@ def get_own_posts():
     posts = [x.serialize for x in Post.query.filter_by(user_id=g.user.id).all()]
     return render_template('posts.html', posts=posts)
 
+@app.route('/post/<id>', methods=['GET'])
+@login_required
+def get_post(id):
+    post = post = Post.query.filter_by(id=id).first()
+    return render_template('post.html', post=post)
+
 
 @app.route('/createpost', methods=['GET'])
 @login_required
@@ -286,8 +292,7 @@ def create_root_user():
     if user is not None:
         return
     me = User('root', 'root', 'default.jpg')
-    notme = User('root1', 'root1', 'default.jpg')
-    me.follows.append(notme)
+    notme = User('root1', 'root1', 'default1.png')
     db.session.add(me)
     db.session.add(notme)
     db.session.commit()

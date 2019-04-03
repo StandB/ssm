@@ -15,7 +15,7 @@
           <p style="color: green;"> Already following! </p>
       {% else %}
           <p style="color: orange;"> Not following yet! </p>
-          <form action="" method="post">
+          <form action="" method="post" id="follow">
             <input type="submit" value="+" />
           </form>
       {% endif %}
@@ -27,7 +27,7 @@
     {% if post != None %}
     <h3 style="margin-top: 30px;">Most recent post:</h3>
     <div class="post">
-      <p><b>{{ post.title }} -- {{ post.date }}</b></p>
+      <p><b><a href="/post/{{post.id}}">{{ post.title }}</a> -- {{ post.date }}</b></p>
     </div>
     {% endif %}
   </div>

@@ -1,0 +1,10 @@
+{% extends "layout.html" %}
+{% block body %}
+  <div id="posts" style="margin-top: 100px;">
+    <div class="post">
+      <p><b>{{ post.title }}</b></p>
+      <p>{{ post.content }}</p>
+      <p><b>Posted by {{ post.user.username }} </b></p>
+    </div>
+  </div>
+{% endblock %}
