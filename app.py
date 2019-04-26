@@ -1,4 +1,4 @@
-import json, bcrypt, uuid, os, time
+import json, bcrypt, uuid, os, time, datetime
 from flask import Flask, request, jsonify, \
     render_template, redirect, url_for, g, send_from_directory, abort
 from flask_sqlalchemy import SQLAlchemy
@@ -77,18 +77,18 @@ class Post(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     title = db.Column(db.String(50), nullable=False)
     content = db.Column(db.String(500), nullable=False)
-    date = db.Column(db.String(500), nullable=False)
+    datetime = db.Column(db.DateTime, nullable=False)
 
     def __init__(self, title, content):
         self.title = title
         self.content = content
-        self.date = time.strftime("%d/%m/%Y")
+        self.datetime = datetime.datetime.now()
 
     @property
     def serialize(self):
         """ convert the object to JSON """
         return {'id': self.id, 'user_id': self.user_id,
-                'title': self.title, 'content': self.content}
+                'title': self.title, 'content': self.content, 'datetime': self.datetime}
 
 
 @app.route('/api/users', methods=['POST'])
@@ -224,10 +224,17 @@ def get_own_posts():
     posts = [x.serialize for x in Post.query.filter_by(user_id=g.user.id).all()]
     return render_template('posts.html', posts=posts)
 
+@app.route('/feed', methods=['GET'])
+@login_required
+def get_feed():
+    following = list(map(lambda x: x.id, g.user.follows))
+    posts = Post.query.filter(Post.user_id.in_(following)).order_by(db.desc(Post.datetime))
+    return render_template('posts.html', posts=posts)
+
 @app.route('/post/<id>', methods=['GET'])
 @login_required
 def get_post(id):
-    post = post = Post.query.filter_by(id=id).first()
+    post = Post.query.filter_by(id=id).first()
     return render_template('post.html', post=post)
 
 
