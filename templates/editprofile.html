@@ -4,7 +4,7 @@
     <div id="avatar">
       <img id="avatarimg" src="http://localhost:5000/uploads/{{ g.user.avatar }}">
     </div>
-      <form method="POST" action="/api/users/update" enctype="multipart/form-data" id="editform">
+      <form method="POST" action="/api/user/update" enctype="multipart/form-data" id="editform">
         <input type="hidden" name="id" value="{{g.user.id}}">
         <input type="file" name="file" style="margin-left: 70px;"><br>
         <label for="username" style="margin-top: 25px;">Username:</label>

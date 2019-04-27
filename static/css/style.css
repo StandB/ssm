@@ -26,7 +26,7 @@ nav {
   right: 15px;
   position: fixed;
   text-align: center;
-  width: 400px;
+  width: 450px;
   float: right;
 }
 
@@ -84,7 +84,7 @@ nav a {
 #posts {
   width: 500px;
   margin: 0 auto;
-  margin-top: 25px;
+  margin-top: 75px;
 }
 
 .post {

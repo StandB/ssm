@@ -43,7 +43,7 @@ class User(db.Model):
     avatar = db.Column(db.String(100), nullable=False)
     description = db.Column(db.String(300), nullable=False)
     follows = db.relationship('User', secondary=follows, primaryjoin=id==follows.c.user_id,secondaryjoin=id==follows.c.follows_id)
-    posts = db.relationship('Post', backref='user', lazy='dynamic')
+    posts = db.relationship('Post', back_populates="user", lazy='dynamic')
 
     def __init__(self, username, password, avatar):
         self.username = username
@@ -78,6 +78,7 @@ class Post(db.Model):
     title = db.Column(db.String(50), nullable=False)
     content = db.Column(db.String(500), nullable=False)
     datetime = db.Column(db.DateTime, nullable=False)
+    user = db.relationship("User", back_populates="posts")
 
     def __init__(self, title, content):
         self.title = title
@@ -88,10 +89,11 @@ class Post(db.Model):
     def serialize(self):
         """ convert the object to JSON """
         return {'id': self.id, 'user_id': self.user_id,
-                'title': self.title, 'content': self.content, 'datetime': self.datetime}
+                'title': self.title, 'content': self.content, 
+                'datetime': self.datetime, 'user': self.user}
 
 
-@app.route('/api/users', methods=['POST'])
+@app.route('/api/user', methods=['POST'])
 @login_required
 def add_user():
     """ add a user """
@@ -113,7 +115,7 @@ def add_user():
 
 
 # native forms doesn't support PUT so used different endpoint :/
-@app.route('/api/users/update', methods=['POST'])
+@app.route('/api/user/update', methods=['POST'])
 @login_required
 def update_user():
     """ update a user """
@@ -132,8 +134,8 @@ def update_user():
     user.description = description
 
     # update avatar of user
-    f = request.files.get('file')
-    if f is not None:
+    f = request.files.get('file', None)
+    if f:
         user.avatar = uuid.uuid4().hex + ".jpg"  
         f.save(os.path.join(app.config['UPLOAD_FOLDER'], user.avatar))
 
@@ -152,7 +154,7 @@ def update_user():
 
 
 @login_required
-@app.route('/api/posts', methods=['POST'])
+@app.route('/api/post', methods=['POST'])
 def create_post():
     """ create post """
     title = request.form.get('title')
@@ -222,20 +224,20 @@ def get_users():
 @login_required
 def get_own_posts():
     posts = [x.serialize for x in Post.query.filter_by(user_id=g.user.id).all()]
-    return render_template('posts.html', posts=posts)
+    return render_template('posts.html', posts=posts, create_post=True)
 
 @app.route('/feed', methods=['GET'])
 @login_required
 def get_feed():
     following = list(map(lambda x: x.id, g.user.follows))
-    posts = Post.query.filter(Post.user_id.in_(following)).order_by(db.desc(Post.datetime))
-    return render_template('posts.html', posts=posts)
+    posts = Post.query.filter(Post.user_id.in_(following)).order_by(db.desc(Post.datetime)).all()
+    return render_template('posts.html', posts=posts, create_post=False)
 
 @app.route('/post/<id>', methods=['GET'])
 @login_required
 def get_post(id):
-    post = Post.query.filter_by(id=id).first()
-    return render_template('post.html', post=post)
+    post = [Post.query.filter_by(id=id).first()]
+    return render_template('posts.html', posts=post)
 
 
 @app.route('/createpost', methods=['GET'])
@@ -244,7 +246,7 @@ def create_post_page():
     return render_template('createpost.html')
 
 
-@app.route('/users/<id>', methods=['GET'])
+@app.route('/user/<id>', methods=['GET'])
 @login_required
 def get_profile(id):
     user = User.query.filter_by(id=id).first()
@@ -258,7 +260,7 @@ def get_profile(id):
         abort(404)
     return render_template('profile.html', user=user.serialize, post=post, following=following)
 
-@app.route('/users/<id>', methods=['POST'])
+@app.route('/user/<id>', methods=['POST'])
 @login_required
 def follow_user(id):
     user = User.query.filter_by(id=id).first()

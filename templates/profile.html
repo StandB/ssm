@@ -27,7 +27,7 @@
     {% if post != None %}
     <h3 style="margin-top: 30px;">Most recent post:</h3>
     <div class="post">
-      <p><b><a href="/post/{{post.id}}">{{ post.title }}</a> -- {{ post.date }}</b></p>
+      <p><b><a href="/post/{{post.id}}">{{ post.title }}</a> -- {{ post.datetime.strftime('%Y-%m-%d %HH:%MM') }}</b></p>
     </div>
     {% endif %}
   </div>

@@ -1,14 +1,18 @@
 {% extends "layout.html" %}
 {% block body %}
   <div id="posts">
-    <h3>Posts</h3>
+    {% if posts|length > 1 %}
+      <h3>Posts</h3>
+      <hr>
+    {% endif %}
     {% for post in posts %}
-    <hr>
     <div class="post">
-      <p><b>{{ post.title }}</b></p>
+      <p><b><a href="/user/{{post.user_id}}">{{ post.user.username }}</a></b> : {{ post.title }} </p>
       <p>{{ post.content }}</p>
     </div>
     {% endfor %}
-    <a href="/createpost" style="float: right; margin-top: 25px;">Create post</a>
+    {% if create_post %}
+      <a href="/createpost" style="float: right; margin-top: 25px;">Create post</a>
+    {% endif %}
   </div>
 {% endblock %}
