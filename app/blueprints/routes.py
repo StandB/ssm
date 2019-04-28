@@ -1,9 +1,8 @@
-import json, bcrypt, uuid, os, time, datetime
-from flask import Flask, request, jsonify, \
+import bcrypt
+from flask import Flask, request, \
     render_template, redirect, url_for, g, send_from_directory, abort, Blueprint, current_app
 from flask_sqlalchemy import SQLAlchemy
-from flask_login import login_user, logout_user, current_user, \
-    login_required, LoginManager
+from flask_login import logout_user, login_required
 from werkzeug import secure_filename
 from app.models import User, Post
 
