@@ -1,6 +1,7 @@
+import bcrypt, datetime
 from flask_sqlalchemy import SQLAlchemy
 
-db = SQLAlchemy()
+from app import db
 
 class Post(db.Model):
     id = db.Column('id', db.Integer, primary_key=True)
