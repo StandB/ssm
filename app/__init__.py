@@ -29,7 +29,6 @@ def setup():
     if user is not None:
         return
     me = User('root', 'root', 'default.jpg')
-    notme = User('root1', 'root1', 'default1.png')
     db.session.add(me)
     db.session.add(notme)
     db.session.commit()
